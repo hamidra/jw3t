@@ -13,5 +13,8 @@
   },
   "files": [
     "./dist"
-  ]
+  ],
+  "scripts": {
+    "test": "jest"
+  }
 }
