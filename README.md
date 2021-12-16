@@ -39,7 +39,7 @@ e.g.
 {
   "alg": "ed25519",
   "typ": "JW3T",
-  "add":"substrate"
+  "add":"ss58"
 }
 ```
 
