@@ -24,6 +24,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@polkadot/api": "^6.12.1",
+    "@polkadot/keyring": "^8.1.2",
+    "@polkadot/util": "^8.1.2",
+    "@polkadot/util-crypto": "^8.1.2",
     "js-base64": "^3.7.2"
   }
 }
