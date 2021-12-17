@@ -12,27 +12,29 @@ So for jw3t:
 
 - The token includes an address claim in the payload.
 - The token is signed by the private key of the claimed address.
-- The token is verified to be valid through checking the signature is valid, and the signature address matches the claimed address that is included in the payload.
+- The token is considered to be valid if it has a valid signature, and the signature address matches the claimed address that is included in the payload.
 
 # Why jw3t?
 
 Why do we need a token for web3 where all messages can be signed by the owner accounts. Aren't we developing decentralized apps?! so who are these tokens going to be issued for? The advantage the json web3 tokens provide is the better user experience for scenarios that there is a trusted middle layer between the user and decentralized network. This can happen when there are some hybrid scenarios that might need to provide some off-chain services and data as well as onchain transactions.
+
 E.g in the case of NFTs there are minting platforms that provide an e2e UX for minting and managing NFTs which let the user upload the resources to IPFS and set the metadata files on the chain. In this scenario the platform needs to authneticate the users accounts to be able to let them manage their off-chain resources. jw3t can provide a self-contained and self-sovereign solution for the user to authenticate and authorize their off-chain resources.
 
 # How jw3t tokens are issued:
 
-Similar to JSON Web Tokens, JSON WEB3 Tokens consist the same three parts as JWT separated by dots (.), which are:
+Similar to Json Web Tokens, Json Web3 Tokens consist of the same three parts as JWT separated by dots (.), which are:
 
-Header
-Payload
+Header  
+Payload  
 Signature
 
-So the looks like as:
+and the token format would look like below:
 xxxxx.yyyyy.zzzzz
 
 ## Header:
 
-The header includes the signing scheme specified by "alg" field and the address type specified by "add" field and the token type specified by "typ" which is always set to "JW3T"  
+The header includes the signing scheme specified by "alg" field and the address type specified by "add" field and the token type specified by "typ" which is always set to "JW3T" for web3 tokens.
+
 e.g.
 
 ```
@@ -47,7 +49,7 @@ specifies that the token is a Json Web3 Token that is using ed25519 signing sche
 
 ## Payload:
 
-The payload of the token is a json object which includes a requied claim that species the address of the account that has issued the token as well as some suggested claimes fields:
+The payload of the token is a json object which includes a requied claim that species the address of the account that has issued the token as well as some suggested claim fields:
 
 - "add" (Address) Claim:
   specifies the address of the account that has signed the token. this field is used during the token verification and if it is not a valid address of the address type that is specified in the header the token verification should fail.
