@@ -1,12 +1,7 @@
 import { Base64Signer } from './types.d';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { Signer as KeyringSigner } from '@polkadot/api/types';
-import {
-  signatureVerify,
-  cryptoWaitReady,
-  decodeAddress,
-} from '@polkadot/util-crypto';
-import { hexToU8a, stringToHex, stringToU8a } from '@polkadot/util';
+import { hexToU8a } from '@polkadot/util';
 import { Base64 } from 'js-base64';
 import { JW3TContent } from './content';
 
@@ -20,6 +15,7 @@ export class PolkaJsSigner implements Base64Signer {
   constructor(signingAccount: SigningAccount) {
     this._signingAccount = signingAccount;
   }
+
   async sign(data: string): Promise<string> {
     let sig: Uint8Array | undefined;
     if (!this._signingAccount || !this._signingAccount?.account) {
@@ -53,7 +49,7 @@ export class JW3TSigner {
     this._signer = signer;
     this._content = content;
   }
-  async getSignedToken(): Promise<string> {
+  async getSignature(): Promise<{ base64Content: string; base64Sig: string }> {
     if (!this._signer) {
       throw new Error('no signer is set for signing the token');
     }
@@ -62,6 +58,6 @@ export class JW3TSigner {
     }
     let base64Content = this._content.toBase64Url();
     let base64Sig = await this._signer.sign(base64Content);
-    return `${base64Content}.${base64Sig}`;
+    return { base64Content, base64Sig };
   }
 }

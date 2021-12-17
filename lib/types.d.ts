@@ -54,3 +54,7 @@ export interface Payload {
 export interface Base64Signer {
   sign(data: string): Promise<string>;
 }
+
+export interface Verifier {
+  verify(jw3t: string): Promise<boolean>;
+}
