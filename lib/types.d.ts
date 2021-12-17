@@ -50,3 +50,7 @@ export interface Payload {
    */
   [claimName: string]: unknown;
 }
+
+export interface Base64Signer {
+  sign(data: string): Promise<string>;
+}
