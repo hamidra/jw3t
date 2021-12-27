@@ -1,11 +1,12 @@
 import { Header, Payload } from './types.d';
 import { JW3TContent } from './content';
-import { PolkaJsSigner, JW3TSigner } from './sign';
-import { PolkaJsVerifier, JW3TVerifier } from './verify';
+import { PolkaJsSigner, PolkaJsVerifier } from './polkadot';
+import { JW3TSigner } from './sign';
+import { JW3TVerifier } from './verify';
 import { Keyring } from '@polkadot/keyring';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
 
-test('test a valid jw3t', async () => {
+test('test a valid jw3t using polkadot signer', async () => {
   let keyring = new Keyring({ type: 'ed25519' });
   let mnemonic = mnemonicGenerate();
   let account = keyring.createFromUri(mnemonic);
@@ -18,20 +19,23 @@ test('test a valid jw3t', async () => {
   };
   let payload = <Payload>{
     add: address,
-    aud: 'test',
   };
 
-  let content = new JW3TContent(header, payload);
+  let exp = Math.floor(Date.now() / 1000) + 24 * 3600; // expire in 24 hours
+  let content = new JW3TContent(header, payload)
+    .setAudience('uri:test')
+    .setExpiration(exp);
   let polkaJsSigner = new PolkaJsSigner(signingAccount);
   let jw3tSigner = new JW3TSigner(polkaJsSigner, content);
   let { base64Content, base64Sig } = await jw3tSigner.getSignature();
   let jw3t = `${base64Content}.${base64Sig}`;
-  console.log(jw3t);
 
   let polkaJsVerifier = new PolkaJsVerifier();
   let jw3tVerifier = new JW3TVerifier(polkaJsVerifier);
-  let isValid = await jw3tVerifier.verify(jw3t);
-  console.log(isValid);
+  let { header: verifiedHeader, payload: verifiedPayload } =
+    await jw3tVerifier.verify(jw3t);
+  expect(verifiedHeader).toEqual(header);
+  expect(1).toBe(2);
 });
 
 test('token content base46URI encode/decode success', () => {

@@ -35,7 +35,7 @@ export interface Payload {
   exp?: number;
 
   /**
-   * Not Before Claim- Identifies the time before which the JW3T is not accepted for processing
+   * Not Before Claim - Identifies the time before which the JW3T is not accepted for processing
    * Similar to :[RFC7519#section-4.1.5](https://tools.ietf.org/html/rfc7519#section-4.1.5).
    */
   nbf?: number;
@@ -51,10 +51,14 @@ export interface Payload {
   [claimName: string]: unknown;
 }
 
-export interface Base64Signer {
-  sign(data: string): Promise<string>;
+export interface Signer {
+  sign(data: string): Promise<Uint8Array>;
 }
 
-export interface Verifier {
-  verify(jw3t: string): Promise<boolean>;
+export interface SigVerifier {
+  verify(
+    message: string,
+    signature: Uint8Array,
+    address: string
+  ): Promise<boolean>;
 }
