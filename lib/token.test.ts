@@ -1,8 +1,11 @@
 import { Header, Payload } from './types.d';
-import { JW3TContent } from './content';
-import { PolkaJsSigner, PolkaJsVerifier } from './polkadot';
-import { JW3TSigner } from './sign';
-import { JW3TVerifier } from './verify';
+import {
+  JW3TContent,
+  JW3TSigner,
+  JW3TVerifier,
+  PolkaJsSigner,
+  PolkaJsVerifier,
+} from './index';
 import { Keyring } from '@polkadot/keyring';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
 
@@ -35,7 +38,6 @@ test('test a valid jw3t using polkadot signer', async () => {
   let { header: verifiedHeader, payload: verifiedPayload } =
     await jw3tVerifier.verify(jw3t);
   expect(verifiedHeader).toEqual(header);
-  expect(1).toBe(2);
 });
 
 test('token content base46URI encode/decode success', () => {
@@ -51,8 +53,7 @@ test('token content base46URI encode/decode success', () => {
   };
   let content = new JW3TContent(header, payload);
   let b64 = content.toBase64Url();
-  console.log(b64);
-  let jw3t = JW3TContent.fromBase64Url(b64);
-  console.log(jw3t.header);
-  console.log(jw3t.payload);
+  let decoded = JW3TContent.fromBase64Url(b64);
+  expect(decoded.header).toEqual(header);
+  expect(decoded.payload).toEqual(payload);
 });

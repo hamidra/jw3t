@@ -21,7 +21,9 @@
     "./dist"
   ],
   "scripts": {
-    "test": "jest"
+    "build": "tsc",
+    "test": "jest",
+    "prepare": "yarn build & yarn test"
   },
   "dependencies": {
     "@polkadot/api": "^6.12.1",
