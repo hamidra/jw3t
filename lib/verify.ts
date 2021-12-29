@@ -52,13 +52,12 @@ export class JW3TVerifier {
       throw new Error('invalid token.  address claim is missing');
     }
 
-    if (
-      !this._sigVerifier.verify(
-        `${b64_header}.${b64_payload}`,
-        signature,
-        address
-      )
-    ) {
+    let sigIsValid = await this._sigVerifier.verify(
+      `${b64_header}.${b64_payload}`,
+      signature,
+      address
+    );
+    if (!sigIsValid) {
       throw new Error('invalid token, signiture is not valid');
     }
 

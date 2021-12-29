@@ -12,8 +12,8 @@ export class PolkaJsVerifier implements SigVerifier {
     signature: Uint8Array,
     address: string
   ): Promise<boolean> {
-    let publicKey = decodeAddress(address);
     await cryptoWaitReady();
+    let publicKey = decodeAddress(address);
     let { isValid } = signatureVerify(message, signature, publicKey);
     if (!isValid) {
       return false;
