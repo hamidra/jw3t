@@ -1,6 +1,6 @@
 {
   "name": "jw3t",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A library to create and validate json web3 tokens.",
   "main": "./dist/cjs/lib/index.js",
   "types": "./dist/cjs/lib/index.d.ts",
