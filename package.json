@@ -1,9 +1,9 @@
 {
   "name": "jw3t",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A library to create and validate json web3 tokens.",
-  "main": "dist/lib/index.js",
-  "types": "dist/lib/index.d.ts",
+  "main": "./dist/cjs/lib/index.js",
+  "types": "./dist/cjs/lib/index.d.ts",
   "repository": "https://github.com/hamidra/jw3t.git",
   "author": "hamidra <hamid.alipour@gmail.com>",
   "license": "Apache License 2.0",
@@ -21,7 +21,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "yarn build:ems && yarn build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build:ems": "tsc --module esnext --outDir dist/ems",
     "test": "jest",
     "prepare": "yarn build & yarn test"
   },
@@ -31,5 +33,11 @@
     "@polkadot/util": "^8.1.2",
     "@polkadot/util-crypto": "^8.1.2",
     "js-base64": "^3.7.2"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/lib/index.js",
+      "default": "./dist/ems/lib/index.js"
+    }
   }
 }
