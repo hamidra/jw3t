@@ -1,6 +1,5 @@
 import { Payload, Header } from './types.d';
 import { Base64 } from 'js-base64';
-import { stringify } from 'querystring';
 
 class JW3TContent {
   header: Header;
@@ -17,6 +16,19 @@ class JW3TContent {
     let payload = JSON.parse(Base64.decode(pb64));
     let jw3t = new JW3TContent(header, payload);
     return jw3t;
+  }
+
+  stringify(): string {
+    if (!this.header) {
+      throw new Error('token header can not be empty.');
+    }
+    if (!this.payload) {
+      throw new Error('token payload can not be empty.');
+    }
+
+    let headerStr = JSON.stringify(this.header);
+    let payloadStr = JSON.stringify(this.payload);
+    return `${headerStr}.${payloadStr}`;
   }
 
   toBase64Url(): string {
@@ -71,6 +83,14 @@ class JW3TContent {
    */
   setAudience(aud: string | string[]): JW3TContent {
     this.payload = { ...this.payload, aud };
+    return this;
+  }
+
+  /**
+   *
+   */
+  setAddress(add: string): JW3TContent {
+    this.payload = { ...this.payload, add };
     return this;
   }
 }

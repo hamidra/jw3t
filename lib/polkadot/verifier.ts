@@ -4,7 +4,6 @@ import {
   cryptoWaitReady,
   decodeAddress,
 } from '@polkadot/util-crypto';
-import { Base64 } from 'js-base64';
 
 export class PolkaJsVerifier implements SigVerifier {
   async verify(

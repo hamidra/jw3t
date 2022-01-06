@@ -15,8 +15,9 @@ export class JW3TSigner {
     if (!this._content) {
       throw new Error('no content is set to be signed.');
     }
+    let jsonStrContent = this._content.stringify();
     let base64Content = this._content.toBase64Url();
-    let sig = await this._signer.sign(base64Content);
+    let sig = await this._signer.sign(jsonStrContent);
     let base64Sig = Base64.fromUint8Array(sig, true);
     return { base64Content, base64Sig };
   }

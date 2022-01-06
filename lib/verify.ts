@@ -1,5 +1,6 @@
 import { Base64 } from 'js-base64';
 import { Payload, Header, SigVerifier } from './types.d';
+import { JW3TContent } from './content';
 
 let skew = 300; // seconds
 export class JW3TVerifier {
@@ -52,8 +53,10 @@ export class JW3TVerifier {
       throw new Error('invalid token.  address claim is missing');
     }
 
+    let content = JW3TContent.fromBase64Url(`${b64_header}.${b64_payload}`);
+    let contentJsonStr = content.stringify();
     let sigIsValid = await this._sigVerifier.verify(
-      `${b64_header}.${b64_payload}`,
+      contentJsonStr,
       signature,
       address
     );
