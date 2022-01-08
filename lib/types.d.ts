@@ -57,6 +57,7 @@ export interface Signer {
 
 export interface SigVerifier {
   verify(
+    alg: string,
     message: string,
     signature: Uint8Array,
     address: string

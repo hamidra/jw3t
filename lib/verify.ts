@@ -28,6 +28,7 @@ export class JW3TVerifier {
     let payload = JSON.parse(Base64.decode(b64_payload)) as Payload;
     let signature = Base64.toUint8Array(b64_signature);
 
+    let { alg } = header || {};
     // validate nbf if exists
     let {
       add: address,
@@ -56,6 +57,7 @@ export class JW3TVerifier {
     let content = JW3TContent.fromBase64Url(`${b64_header}.${b64_payload}`);
     let contentJsonStr = content.stringify();
     let sigIsValid = await this._sigVerifier.verify(
+      alg,
       contentJsonStr,
       signature,
       address

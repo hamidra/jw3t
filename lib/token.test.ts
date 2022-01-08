@@ -71,6 +71,35 @@ test('test an invalid jw3t using polkadot signer (wrong address in the payload)'
   );
 });
 
+test('test an invalid jw3t using polkadot signer (wrong alg)', async () => {
+  let keyring = new Keyring({ type: 'sr25519' });
+  let mnemonic = mnemonicGenerate();
+  let account = keyring.createFromUri(mnemonic);
+  let signingAccount = { account };
+  let address = account.address;
+  let header = <Header>{
+    alg: 'ed25519',
+    typ: 'JW3T',
+    add: 'ss58',
+  };
+  let payload = <Payload>{
+    add: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', // wrong address in the token
+  };
+
+  let exp = Math.floor(Date.now() / 1000) + 24 * 3600; // expire in 24 hours
+  let content = new JW3TContent(header, payload)
+    .setAudience('uri:test')
+    .setExpiration(exp);
+  let polkaJsSigner = new PolkaJsSigner(signingAccount);
+  let jw3tSigner = new JW3TSigner(polkaJsSigner, content);
+  let { base64Content, base64Sig } = await jw3tSigner.getSignature();
+  let jw3t = `${base64Content}.${base64Sig}`;
+
+  let polkaJsVerifier = new PolkaJsVerifier();
+  let jw3tVerifier = new JW3TVerifier(polkaJsVerifier);
+  await expect(jw3tVerifier.verify(jw3t)).rejects.toThrow();
+});
+
 test('token content base46URI encode/decode success', () => {
   let header = <Header>{
     alg: 'ed25519',
