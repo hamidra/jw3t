@@ -1,32 +1,29 @@
-# What is json web3 token
+# What is Json Web3 Token
 
-Json Web3 Token (jw3t) is a self-contained json token, formatted based on the Json Web Token standard [RFC 7519](https://tools.ietf.org/html/rfc7519) and adapted to work for the web3 authentications and authorization usecases.
+Json Web3 Token (JW3T) is a self-contained json token, inspired by Json Web Token standard [RFC 7519](https://tools.ietf.org/html/rfc7519) with some adaptations to make it work for the web3 authentications and authorization usecases.
 
-# jw3t vs jwt?
+# JW3T vs JWT?
 
-The main difference between Json Web3 Tokens and Json Web Tokens is in the issuance and verification procedures.
-In a web3 world the identities are self-sovereign and each user owns the signing keys for their accounts, hence the json web3 tokens are issued by the users themselves and are signed by the user's private key. This means that the issuer and the subject of a jw3t are the same which makes the fields redundant. Also another characteristic of web3 accounts is that the address of an account can be derived from the signature (using the public key). Considering these chracteristics we can replace the issuer and subject fields with an account address field.
+The main difference between a "Json Web3 Token" and "Json Web Token" is in the issuance and verification procedures.
+In web3 world, the identities are self-sovereign and each user owns the signing keys of their accounts, hence the Json Web3 Tokens are issued by the users themselves and are signed by the user account's private key. This means that the [issuer](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.1) and the [subject](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.2) of a JW3T are the same which makes the fields redundant. Also another characteristic of web3 accounts is that the address of an account can be derived from the signature (using the public key). Considering these chracteristics we can replace the issuer and subject fields with an account address field.
 So for jw3t:
 
 - The token includes an address claim in the payload.
 - The token is signed by the private key of the claimed address.
-- The token is considered to be valid if it has a valid signature, and the signature address matches the claimed address that is included in the payload.
+- The token is considered to be valid if it has a valid signature, and the signature address matches the claimed address in the payload.
 
-# Why jw3t?
+# Why JW3T?
 
-Why do we need a token for web3 where all messages can be signed by the owner accounts. Aren't we developing decentralized apps?! so who are these tokens going to be issued for? The advantage the json web3 tokens provide is the better user experience for scenarios that there is a trusted middle layer between the user and decentralized network. This can happen when there are some hybrid scenarios that might need to provide some off-chain services and data as well as onchain transactions.
+Why do we need a token for web3 where all messages can be signed by the owner accounts. If we are developing decentralized apps then who are these tokens issued for?  
+The advantage the Json Web3 Tokens provide is the better user experience for scenarios that there is a trusted middle layer between the user and decentralized network. This can happen when there are some hybrid scenarios that might require to access some off-chain services and data as well as onchain transactions.
 
-E.g in the case of NFTs there are minting platforms that provide an e2e UX for minting and managing NFTs which let the user upload the resources to IPFS and set the metadata files on the chain. In this scenario the platform needs to authneticate the users accounts to be able to let them manage their off-chain resources. jw3t can provide a self-contained and self-sovereign solution for the user to authenticate and authorize their off-chain resources.
+E.g in the case of NFTs there are minting platforms that provide an e2e UX for minting and managing NFTs which let the user upload the resources to IPFS and set the metadata fields on the chain. In these scenarios the platform needs to authneticate the users accounts to be able to let them manage their off-chain resources. JW3T can provide a self-contained and self-sovereign solution for the user to authenticate and authorize their off-chain resources.
 
-# How jw3t tokens are issued:
+# How JW3T is issued?
 
-Similar to Json Web Tokens, Json Web3 Tokens consist of the same three parts as JWT separated by dots (.), which are:
+Similar to Json Web Tokens, Json Web3 Tokens consist of the same three parts (Header, Payload, Signature) encoded in [Base64URI](https://datatracker.ietf.org/doc/html/rfc4648#section-5) and separated by dots (.)
 
-Header  
-Payload  
-Signature
-
-and the token format would look like below:
+The final token format would look like below:  
 xxxxx.yyyyy.zzzzz
 
 ## Header:
@@ -37,20 +34,20 @@ e.g.
 
 ```
 {
-  "alg": "ed25519",
-  "typ": "JW3T",
-  "add":"ss58"
+  "alg": "sr25519",
+  "add":"ss58",
+  "typ": "JW3T"
 }
 ```
 
-specifies that the token is a Json Web3 Token that is using ed25519 signing schema and the address type is a substrate address.
+specifies that the token is a Json Web3 Token that is using sr25519 signing schema and the address type is a substrate address.
 
 ## Payload:
 
-The payload of the token is a json object which includes a requied claim that species the address of the account that has issued the token as well as some suggested claim fields:
+The payload of the token is a json object which includes a required address claim that species the address of the account that has issued the token as well as some suggested claim fields:
 
 - "add" (Address) Claim:
-  specifies the address of the account that has signed the token. this field is used during the token verification and if it is not a valid address of the address type that is specified in the header the token verification should fail.
+  specifies the address of the account that has signed the token. This field is used during the token verification and if it is not a valid address of the type that is specified in the header `{"add":} ` the token verification should fail.
 - "aud" (Audience) Claim :  
   The "aud" (audience) claim identifies the recipients that the JW3T is intended for. The audience is usually a uri that specifies the web resource or website that the token is issued for.
 - "exp" (Expiration Time) Claim:  
@@ -60,8 +57,11 @@ The payload of the token is a json object which includes a requied claim that sp
 
 ## Signature:
 
-The signature is generated by signing the header (as a JSON string) concatenated by a "." concatenated by the payload (as a JSON string) using the signing algorithm that is specified in the token header.  
-Note: Unlike jwt that signes the header and payload as Base64URI, the header and payload in jw3t are signed as a JSON string to let the Signer and wallet apps present them as json string so the user can see what message they are signing
+The signature is generated by signing the header (as a JSON string) concatenated by a "." concatenated by the payload (as a JSON string) using the signing algorithm that is specified in the token header `{"alg":}`.
+
+`signature = sign(header + '.' + payload)`
+
+Note: Unlike JWT, that the signer signes the header and payload as a Base64URI encoded message, the header and payload in JW3T are signed as a JSON string to let the signer apps and wallets present them as json string so the user can see what message they are signing.
 
 The token is then generated by Base64URI encoding each part and then concatenating them together separated by a ".". So the final token will be as:
 
@@ -73,10 +73,10 @@ jw3t =  Base64URI.encode(header) +
         Base64URI.encode(signature)
 ```
 
-## How jw3t tokens are verified:
+## How JW3T is verified?
 
-to verify a jw3t token is valid, two verifications must be performed:
+To verify if a JW3T is valid, two verifications must be performed:
 
-- the signatur should be verified to make sure it is valid signature of the `header + "." + payload` .
+- the signatur should be verified to make sure it is a valid signature of the `header + "." + payload`.
 
-- the address claim in the payload `"add":` should be a valid address of the address type that is specified in the header `"add":` and match the address of the account that has signed the message `signature.address`
+- the address claim in the payload `header.add` should be a valid address of the address type that is specified in the header `payload.add` and match the address of the account that has signed the message `signature.address`
