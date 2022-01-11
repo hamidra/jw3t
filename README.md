@@ -14,7 +14,8 @@ So for jw3t:
 
 # Why JW3T?
 
-Why do we need a token for web3 where all messages can be signed by the owner accounts. If we are developing decentralized apps then who are these tokens issued for?  
+Why do we need a token for web3 where all messages can be signed by the owner accounts. If we are developing decentralized apps then who are these tokens issued for?
+
 The advantage the Json Web3 Tokens provide is the better user experience for scenarios that there is a trusted middle layer between the user and decentralized network. This can happen when there are some hybrid scenarios that might require to access some off-chain services and data as well as onchain transactions.
 
 E.g in the case of NFTs there are minting platforms that provide an e2e UX for minting and managing NFTs which let the user upload the resources to IPFS and set the metadata fields on the chain. In these scenarios the platform needs to authneticate the users accounts to be able to let them manage their off-chain resources. JW3T can provide a self-contained and self-sovereign solution for the user to authenticate and authorize their off-chain resources.
@@ -80,3 +81,69 @@ To verify if a JW3T is valid, two verifications must be performed:
 - the signatur should be verified to make sure it is a valid signature of the `header + "." + payload`.
 
 - the address claim in the payload `header.add` should be a valid address of the address type that is specified in the header `payload.add` and match the address of the account that has signed the message `signature.address`
+
+# How to use this package?
+
+## How to install:
+
+yarn:  
+`yarn add jw3t`
+
+npm:  
+`npm i jw3t`
+
+## How to use:
+
+The package is already comes with a polkadotJS signer/verifier that can be used to signing and verify tokens.
+
+ESM import
+
+`import * as jw3t from 'jw3t'`
+
+CJS require
+
+`const jw3t = require('jw3t')`
+
+e.g.
+to create a token signed by a substarte account:
+
+```
+// create a signing account
+let keyring = new Keyring({ type: 'sr25519' });
+let mnemonic = mnemonicGenerate();
+let account = keyring.createFromUri(mnemonic);
+let signingAccount = { account };
+let address = account.address;
+
+let header = {
+  alg: 'ed25519',
+  typ: 'JW3T',
+  add: 'ss58',
+};
+
+let payload = {
+  add: address
+};
+
+// set expire to 24 hours
+let exp = Math.floor(Date.now() / 1000) + 24 * 3600;
+
+let content = new jw3t.JW3TContent(header, payload)
+  .setAudience('uri:test')
+  .setExpiration(exp);
+
+let polkaJsSigner = new jw3t.PolkaJsSigner(signingAccount);
+let signer = new jw3t.JW3TSigner(polkaJsSigner, content);
+let { base64Content, base64Sig } = await signer.getSignature();
+let token = `${base64Content}.${base64Sig}`;
+```
+
+to verify a token is valid.
+
+```
+let token = "eyJhbGciOiJzcjI1NTE5IiwidHlwIjoiSlczVCIsImFkZCI6InNzNTgifQ.eyJhZGQiOiI1REFBbnJqN1ZIVHpubjJBV0JlbU11eUJ3WldzNkZORmpkeVZYVWVZdW0zUFRYRnkiLCJhdWQiOiJ1cmk6dGVzdCIsImV4cCI6MTY0MTkzODE0Nn0.Oh92A5DXXp2T6vfdwpM90uWyHjzohUxIJMbAG_cQ-1A8GJW_iGjWi5DT0VWEpoZ3UIj71lIxZ4GmWvKD0BCEhA"
+
+let polkaJsVerifier = new jw3t.PolkaJsVerifier();
+let verifier = new jw3t.JW3TVerifier(polkaJsVerifier);
+let isValid = verifier.verify(token);
+```
