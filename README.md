@@ -1,3 +1,5 @@
+:warning: _This library is not audited and the spec is still a work in process and likely to change ._
+
 # What is Json Web3 Token
 
 Json Web3 Token (JW3T) is a self-contained json token, inspired by Json Web Token standard [RFC 7519](https://tools.ietf.org/html/rfc7519) with some adaptations to make it work for the web3 authentications and authorization usecases.
