@@ -1,4 +1,4 @@
-import { Header, Payload, SigVerifier } from '../types.d';
+import { SigVerifier } from '../types.d';
 import {
   signatureVerify,
   cryptoWaitReady,

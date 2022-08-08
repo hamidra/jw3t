@@ -1,6 +1,9 @@
 import { Payload, Header } from './types.d';
 import { Base64 } from 'js-base64';
 
+const jsonStringify = (value: any) => {
+  return JSON.stringify(value, null, 1);
+};
 class JW3TContent {
   header: Header;
   payload: Payload;
@@ -26,8 +29,8 @@ class JW3TContent {
       throw new Error('token payload can not be empty.');
     }
 
-    let headerStr = JSON.stringify(this.header);
-    let payloadStr = JSON.stringify(this.payload);
+    let headerStr = jsonStringify(this.header);
+    let payloadStr = jsonStringify(this.payload);
     return `${headerStr}.${payloadStr}`;
   }
 
@@ -39,8 +42,8 @@ class JW3TContent {
       throw new Error('token payload can not be empty.');
     }
 
-    let headerB64 = Base64.encodeURL(JSON.stringify(this.header));
-    let payloadB64 = Base64.encodeURL(JSON.stringify(this.payload));
+    let headerB64 = Base64.encodeURL(jsonStringify(this.header));
+    let payloadB64 = Base64.encodeURL(jsonStringify(this.payload));
     return `${headerB64}.${payloadB64}`;
   }
 
@@ -52,10 +55,10 @@ class JW3TContent {
    */
   setNotBefore(nbf: number | Date): JW3TContent {
     if (typeof nbf === 'number') {
-      this.payload = { ...this.payload, nbf };
+      this.payload = { ...this.payload, not_before: nbf };
     } else {
       let epoch = Math.floor(nbf.getTime() / 1000);
-      this.payload = { ...this.payload, nbf: epoch };
+      this.payload = { ...this.payload, not_before: epoch };
     }
     return this;
   }
@@ -68,10 +71,10 @@ class JW3TContent {
    */
   setExpiration(exp: number | Date): JW3TContent {
     if (typeof exp === 'number') {
-      this.payload = { ...this.payload, exp };
+      this.payload = { ...this.payload, expires_at: exp };
     } else {
       let epoch = Math.floor(exp.getTime() / 1000);
-      this.payload = { ...this.payload, exp: epoch };
+      this.payload = { ...this.payload, expires_at: epoch };
     }
     return this;
   }
@@ -82,7 +85,7 @@ class JW3TContent {
    * @returns
    */
   setAudience(aud: string | string[]): JW3TContent {
-    this.payload = { ...this.payload, aud };
+    this.payload = { ...this.payload, audience: aud };
     return this;
   }
 
@@ -90,7 +93,7 @@ class JW3TContent {
    *
    */
   setAddress(add: string): JW3TContent {
-    this.payload = { ...this.payload, add };
+    this.payload = { ...this.payload, address: add };
     return this;
   }
 }

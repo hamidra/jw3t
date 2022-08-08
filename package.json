@@ -1,6 +1,6 @@
 {
   "name": "jw3t",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A library to create and validate json web3 tokens.",
   "main": "./dist/cjs/lib/index.js",
   "types": "./dist/cjs/lib/index.d.ts",
@@ -22,8 +22,8 @@
   ],
   "scripts": {
     "build": "yarn build:ems && yarn build:cjs",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "build:ems": "tsc --module esnext --outDir dist/ems",
+    "build:cjs": "tsc --module commonjs --outDir ./dist/cjs",
+    "build:ems": "tsc --module esnext --outDir ./dist/ems",
     "test": "jest",
     "prepare": "yarn build & yarn test"
   },
