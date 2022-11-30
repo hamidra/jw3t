@@ -56,7 +56,6 @@ export class JW3TVerifier {
 
     let content = JW3TContent.fromBase64Url(`${b64_header}.${b64_payload}`);
     let jsonStrContent = content.stringify();
-    console.log(jsonStrContent);
     let sigIsValid = await this._sigVerifier.verify(
       algorithm,
       jsonStrContent,
