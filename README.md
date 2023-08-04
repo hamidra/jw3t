@@ -1,4 +1,4 @@
-:warning: _This library is not audited and the spec is still a work in process and likely to change ._
+:warning: _This library is not audited and the spec is still a work in progress and likely to change ._
 
 # What is Json Web3 Token
 
